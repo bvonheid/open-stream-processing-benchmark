@@ -14,9 +14,12 @@ val extJvmOpts = Seq(
 libraryDependencies ++= Dependencies.rootDependencies
 
 assemblyMergeStrategy in assembly := {
+	//For load local file with spark; https://stackoverflow.com/a/48860990
+	case PathList("META-INF", "services", "org.apache.hadoop.fs.FileSystem") => MergeStrategy.filterDistinctLines
 	case PathList("META-INF", xs @ _*) => MergeStrategy.discard
-	case _ => MergeStrategy.first
+	case x => MergeStrategy.first
 }
+
 mainClass in assembly := Some("ingest.StreamProducer")
 mainClass in(Compile, run) := Some("ingest.StreamProducer")
 
