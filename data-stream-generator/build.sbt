@@ -14,7 +14,7 @@ val extJvmOpts = Seq(
 libraryDependencies ++= Dependencies.rootDependencies
 
 assemblyMergeStrategy in assembly := {
-	case PathList("META-INF", "MANIFEST.MF") => MergeStrategy.discard
+	case PathList("META-INF", xs @ _*) => MergeStrategy.discard
 	case _ => MergeStrategy.first
 }
 mainClass in assembly := Some("ingest.StreamProducer")
