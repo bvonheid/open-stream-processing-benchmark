@@ -77,7 +77,7 @@ object SparkTrafficAnalyzer {
 
     ssc.checkpoint(settings.specific.checkpointDir)
     ssc.start()
-    ssc.awaitTerminationOrTimeout(60000)
+    ssc.awaitTermination()
   }
 
   def registerCorrectPartialFlowForRun(settings: BenchmarkSettingsForSpark,
