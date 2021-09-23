@@ -37,7 +37,7 @@ class BenchmarkSettingsForSpark(overrides: Map[String, Any] = Map()) extends Ser
 
     val defaultParallelism: Int = general.configProperties.getInt("spark.default.parallelism")
     val sqlShufflePartitions: Int = general.configProperties.getInt("spark.sql.shuffle.partitions")
-    val blockInterval: Int = Math.min(batchInterval/defaultParallelism, 50)
+    val blockInterval: Int = Math.max(batchInterval/defaultParallelism, 50)
     val localityWait: Int = sparkProperties.getInt("locality.wait")
     val writeAheadLogEnabled: Boolean = sparkProperties.getBoolean("spark.streaming.receiver.writeAheadLog.enable")
     val jobProfileKey: String = general.mkJobProfileKey("spark", batchInterval)
