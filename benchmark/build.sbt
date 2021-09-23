@@ -12,6 +12,7 @@ lazy val common = Project(id = "common-benchmark",
     resolvers ++= Seq("otto-bintray" at "https://dl.bintray.com/ottogroup/maven"),
     test in assembly := {},
     assemblyMergeStrategy in assembly := {
+      case "META-INF/services/org.apache.spark.sql.sources.DataSourceRegister" => MergeStrategy.concat
       case PathList("META-INF", "MANIFEST.MF") => MergeStrategy.discard
       case _ => MergeStrategy.first
     },
@@ -70,6 +71,7 @@ def frameworkSettings(framework: String, versionDocker: String) = Seq(
 
   test in assembly := {},
   assemblyMergeStrategy in assembly := {
+    case "META-INF/services/org.apache.spark.sql.sources.DataSourceRegister" => MergeStrategy.concat
     case PathList("META-INF", xs@_*) => MergeStrategy.discard
     case x => MergeStrategy.first
   },
