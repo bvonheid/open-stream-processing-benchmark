@@ -150,9 +150,7 @@ class StatefulStages(settings: BenchmarkSettingsForKafkaStreams)
   def reduceWindowAfterParsingStage(parsedFlowStream: KStream[String, FlowObservation]): KStream[Windowed[String], AggregatableFlowObservation] = {
     val aggregatableFlowStream: KStream[String, AggregatableFlowObservation] = parsedFlowStream.mapValues(el => new AggregatableFlowObservation(el))
 
-    val aggregatedFlowStream = aggregatableFlowStream.groupBy { case (_: String, value: AggregatableFlowObservation) =>
-      value.measurementId
-    }(Grouped.`with`(CustomObjectSerdes.StringSerde, CustomObjectSerdes.AggregatableFlowObservationSerde))
+    val aggregatedFlowStream = aggregatableFlowStream.groupByKey(Grouped.`with`(CustomObjectSerdes.StringSerde, CustomObjectSerdes.AggregatableFlowObservationSerde))
       .windowedBy(TimeWindows.of(Duration.ofMillis(settings.general.windowDurationMsOfWindowAfterParse))
         .advanceBy(Duration.ofMillis(settings.general.slideDurationMsOfWindowAfterParse))
         .grace(Duration.ofMillis(settings.specific.gracePeriodMillis)))
