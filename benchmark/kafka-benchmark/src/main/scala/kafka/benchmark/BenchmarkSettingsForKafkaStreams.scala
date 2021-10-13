@@ -33,8 +33,9 @@ class BenchmarkSettingsForKafkaStreams(overrides: Map[String, Any] = Map()) exte
 
     val batchSize: Long = kafkaStreamsProperties.getLong("batch.size")
     val bufferMemorySize: Long = kafkaStreamsProperties.getLong("buffer.memory.bytes")
-    val commitInterval: Int = if (general.lastStage ==  REDUCE_WINDOW_WITHOUT_JOIN || general.lastStage == NON_INCREMENTAL_WINDOW_WITHOUT_JOIN) general.slideDurationMsOfWindowAfterParse
-    else 1000
+//    val commitInterval: Int = if (general.lastStage ==  REDUCE_WINDOW_WITHOUT_JOIN || general.lastStage == NON_INCREMENTAL_WINDOW_WITHOUT_JOIN) general.slideDurationMsOfWindowAfterParse
+//    else 1000
+    val commitInterval: Int = kafkaStreamsProperties.getInt("commit.interval")
 
     val cacheMaxBytesBuffering: Long = kafkaStreamsProperties.getLong("cache.max.bytes.buffering")
     val compressionTypeConfig: String = kafkaStreamsProperties.getString("compression.type.config")
