@@ -31,9 +31,7 @@ class BenchmarkSettingsForSpark(overrides: Map[String, Any] = Map()) extends Ser
 
     val sparkMaster: String = general.configProperties.getString("spark.master")
 
-    val batchInterval: Int = if (general.lastStage.value < 2 & general.mode.equals(LATENCY_CONSTANT_RATE)) 200
-    else if (general.lastStage == REDUCE_WINDOW_WITHOUT_JOIN || general.lastStage == NON_INCREMENTAL_WINDOW_WITHOUT_JOIN) general.slideDurationMsOfWindowAfterParse
-    else 1000
+    val batchInterval: Int = sparkProperties.getInt("batchInterval")
 
     val defaultParallelism: Int = general.configProperties.getInt("spark.default.parallelism")
     val sqlShufflePartitions: Int = general.configProperties.getInt("spark.sql.shuffle.partitions")
