@@ -103,14 +103,21 @@ class StatelessStages(settings: BenchmarkSettingsForSpark, kafkaParams: Map[Stri
       "value.deserializer" -> classOf[StringDeserializer],
       "group.id" -> groupId,
       "auto.offset.reset" -> settings.general.kafkaAutoOffsetReset,
-      "enable.auto.commit" -> Boolean.box(true)
+      "enable.auto.commit" -> Boolean.box(false)
     )
     val preferredHosts = LocationStrategies.PreferConsistent
-    val flowStream = KafkaUtils.createDirectStream[String, String](ssc,
+    val stream = KafkaUtils.createDirectStream[String, String](ssc,
       preferredHosts,
       ConsumerStrategies.Subscribe[String, String](List(settings.general.flowTopic), kafkaParameters)
     )
-      .map { r: ConsumerRecord[String, String] => (r.topic(), r.key(), r.value(), r.timestamp()) }
+
+    // Commit offsets to Kafka
+    stream.foreachRDD { rdd =>
+      val offsetRanges = rdd.asInstanceOf[HasOffsetRanges].offsetRanges
+      stream.asInstanceOf[CanCommitOffsets].commitAsync(offsetRanges)
+    }
+
+    val flowStream = stream.map { r: ConsumerRecord[String, String] => (r.topic(), r.key(), r.value(), r.timestamp()) }
 
     flowStream
   }
